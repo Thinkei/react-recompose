@@ -49,7 +49,7 @@ npm install recompose --save
 
 It is **highly** recommended to use Yarn to install this fork as an alias, for example:
 
-    yarn add recompose@npm:react-recompose
+    yarn add recompose@npm:eh-react-recompose
 
 then for TypeScript users:
 
