@@ -1,9 +1,9 @@
 {
-  "name": "recompose-build",
-  "private": true,
+  "name": "eh-react-recompose",
+  "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/brodybits/react-recompose.git"
+    "url": "https://github.com/Thinkei/react-recompose.git"
   },
   "license": "MIT",
   "scripts": {

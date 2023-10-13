@@ -1,6 +1,4 @@
-import { Component } from 'react'
-import { polyfill } from 'react-lifecycles-compat'
-import createFactory from './utils/createFactory'
+import { createFactory, Component } from 'react'
 import pick from './utils/pick'
 import shallowEqual from './shallowEqual'
 import setDisplayName from './setDisplayName'
@@ -18,40 +16,27 @@ const withPropsOnChange = (shouldMapOrKeys, propsMapper) => BaseComponent => {
           )
 
   class WithPropsOnChange extends Component {
-    state = {
-      computedProps: propsMapper(this.props),
-      prevProps: this.props,
-    }
+    computedProps = propsMapper(this.props)
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-      if (shouldMap(prevState.prevProps, nextProps)) {
-        return {
-          computedProps: propsMapper(nextProps),
-          prevProps: nextProps,
-        }
-      }
-
-      return {
-        prevProps: nextProps,
+    componentWillReceiveProps(nextProps) {
+      if (shouldMap(this.props, nextProps)) {
+        this.computedProps = propsMapper(nextProps)
       }
     }
 
     render() {
       return factory({
         ...this.props,
-        ...this.state.computedProps,
+        ...this.computedProps,
       })
     }
   }
-
-  polyfill(WithPropsOnChange)
 
   if (process.env.NODE_ENV !== 'production') {
     return setDisplayName(wrapDisplayName(BaseComponent, 'withPropsOnChange'))(
       WithPropsOnChange
     )
   }
-
   return WithPropsOnChange
 }
 
