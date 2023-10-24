@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { Component } from 'react'
-import createFactory from './utils/createFactory'
+import { createFactory, Component } from 'react'
 import setDisplayName from './setDisplayName'
 import wrapDisplayName from './wrapDisplayName'
 import mapValues from './utils/mapValues'
@@ -8,10 +7,18 @@ import mapValues from './utils/mapValues'
 const withHandlers = handlers => BaseComponent => {
   const factory = createFactory(BaseComponent)
   class WithHandlers extends Component {
+    cachedHandlers = {}
+
     handlers = mapValues(
       typeof handlers === 'function' ? handlers(this.props) : handlers,
-      createHandler => (...args) => {
+      (createHandler, handlerName) => (...args) => {
+        const cachedHandler = this.cachedHandlers[handlerName]
+        if (cachedHandler) {
+          return cachedHandler(...args)
+        }
+
         const handler = createHandler(this.props)
+        this.cachedHandlers[handlerName] = handler
 
         if (
           process.env.NODE_ENV !== 'production' &&
@@ -27,6 +34,10 @@ const withHandlers = handlers => BaseComponent => {
         return handler(...args)
       }
     )
+
+    componentWillReceiveProps() {
+      this.cachedHandlers = {}
+    }
 
     render() {
       return factory({
